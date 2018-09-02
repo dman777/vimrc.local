@@ -1,0 +1,99 @@
+set visualbell 
+set nocompatible              " be iMproved, required
+filetype off                  " required
+filetype plugin indent on
+
+:iabbr con console.log('aaa');
+set noswapfile
+
+set t_Co=256
+set laststatus=2
+set tabstop=8
+set expandtab
+set softtabstop=2
+set shiftwidth=2
+set autoindent
+set history=50 
+set updatetime=2000
+set mouse=""
+set ft=html.js
+
+
+hi Normal ctermbg=NONE
+hi Search cterm=NONE ctermfg=grey ctermbg=blue
+
+autocmd BufWritePre *.js %s/\s\+$//e
+map \ i
+set updatetime=2000
+command! Q q
+map :X :x
+map <Enter> <C-w><C-w>
+map <F2> :split <CR>
+
+function s:ForbidReplace()
+    if v:insertmode isnot# 'i'
+        call feedkeys("\<Insert>", "n")
+    endif
+endfunction
+augroup ForbidReplaceMode
+    autocmd!
+    autocmd InsertEnter  * call s:ForbidReplace()
+    autocmd InsertChange * call s:ForbidReplace()
+augroup END
+
+let c_minlines=300
+
+if exists("c_minlines")
+  let b:c_minlines = c_minlines
+else
+  if !exists("c_no_if0")
+    let b:c_minlines = 50 " #if 0 constructs can be long
+  else
+    let b:c_minlines = 15 " mostly for () constructs
+  endif
+endif
+exec "syn sync ccomment cComment minlines=" . b:c_minlines
+
+autocmd BufEnter * :syntax sync minlines=300
+
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+set t_vb=
+set clipboard=unnamedplus
+
+augroup write_it
+    autocmd!
+    autocmd InsertLeave * write | set et | retab
+    autocmd CursorHold * up
+augroup END
+
+" from home directory 
+:iabbr con console.log('aaa');
+set noswapfile
+
+set t_Co=256
+set laststatus=2
+hi Normal ctermbg=NONE
+set hlsearch
+hi Search cterm=NONE ctermfg=grey ctermbg=blue
+
+autocmd BufWritePre *.js %s/\s\+$//e
+map -a :call SyntaxAttr()<CR>
+noremap <F5> <Esc>:syntax sync fromstart<CR>
+
+function! NoPaste(timer)
+  set nopaste
+  set statusline=returning\ to\ no\ paste\ setting
+endfunction
+
+function! Paste()
+  set paste
+  call timer_start(10000, 'NoPaste')
+endfunction
+
+set pastetoggle=<F3>
+set iskeyword+=-
+
+
